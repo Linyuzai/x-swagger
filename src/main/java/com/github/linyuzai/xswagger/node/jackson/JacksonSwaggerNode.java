@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.github.linyuzai.xswagger.exception.XSwaggerException;
 import com.github.linyuzai.xswagger.node.AbstractSwaggerNode;
 import com.github.linyuzai.xswagger.node.SwaggerNode;
 
@@ -14,8 +17,12 @@ public class JacksonSwaggerNode extends AbstractSwaggerNode {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static JacksonSwaggerNode from(String json) throws JsonProcessingException {
-        return new JacksonSwaggerNode(objectMapper.readTree(json));
+    public static JacksonSwaggerNode from(String json) {
+        try {
+            return new JacksonSwaggerNode(objectMapper.readTree(json));
+        } catch (JsonProcessingException e) {
+            throw new XSwaggerException(e);
+        }
     }
 
     public JacksonSwaggerNode(JsonNode node) {
@@ -54,5 +61,32 @@ public class JacksonSwaggerNode extends AbstractSwaggerNode {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public String toJson() {
+        try {
+            return objectMapper.writeValueAsString(getValue());
+        } catch (JsonProcessingException e) {
+            throw new XSwaggerException(e);
+        }
+    }
+
+    @Override
+    public String stringValue() {
+        Object val = getValue();
+        if (val instanceof TextNode) {
+            return ((TextNode) val).asText();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean booleanValue() {
+        Object val = getValue();
+        if (val instanceof BooleanNode) {
+            return ((BooleanNode) val).asBoolean();
+        }
+        return false;
     }
 }

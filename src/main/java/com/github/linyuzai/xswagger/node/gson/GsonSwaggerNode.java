@@ -8,6 +8,8 @@ import java.util.*;
 
 public class GsonSwaggerNode extends AbstractSwaggerNode {
 
+    private static Gson gson = new Gson();
+
     private static JsonParser parser = new JsonParser();
 
     public static GsonSwaggerNode from(String json) {
@@ -48,5 +50,28 @@ public class GsonSwaggerNode extends AbstractSwaggerNode {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public String toJson() {
+        return gson.toJson(getValue());
+    }
+
+    @Override
+    public String stringValue() {
+        Object val = getValue();
+        if (val instanceof JsonPrimitive) {
+            return ((JsonPrimitive) val).getAsString();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean booleanValue() {
+        Object val = getValue();
+        if (val instanceof JsonPrimitive) {
+            return ((JsonPrimitive) val).getAsBoolean();
+        }
+        return false;
     }
 }

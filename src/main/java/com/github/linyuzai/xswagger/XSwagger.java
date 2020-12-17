@@ -1,8 +1,7 @@
 package com.github.linyuzai.xswagger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.linyuzai.xswagger.document.entity.SwaggerDocument;
-import com.github.linyuzai.xswagger.handler.sort.SortNodeHandler;
+import com.github.linyuzai.xswagger.handler.sort.SortNodesHandler;
 import com.github.linyuzai.xswagger.handler.SwaggerHandler;
 import com.github.linyuzai.xswagger.node.SwaggerNode;
 import com.github.linyuzai.xswagger.node.gson.GsonSwaggerNode;
@@ -13,7 +12,7 @@ import java.util.List;
 
 public class XSwagger {
 
-    private List<SortNodeHandler> sortHandlers = new ArrayList<>();
+    private List<SortNodesHandler> sortHandlers = new ArrayList<>();
 
     private List<SwaggerHandler> preHandlers = new ArrayList<>();
 
@@ -21,7 +20,7 @@ public class XSwagger {
 
     private List<SwaggerHandler> postHandlers = new ArrayList<>();
 
-    public void addSortHandler(SortNodeHandler handler) {
+    public void addSortHandler(SortNodesHandler handler) {
         sortHandlers.add(0, handler);
     }
 
@@ -41,15 +40,23 @@ public class XSwagger {
         return handle(new SwaggerDocument(), GsonSwaggerNode.from(json));
     }
 
-    public SwaggerDocument jackson(String json) throws JsonProcessingException {
+    public SwaggerDocument jackson(String json) {
         return handle(new SwaggerDocument(), JacksonSwaggerNode.from(json));
     }
 
     public SwaggerDocument handle(SwaggerDocument document, SwaggerNode node) {
-        handle0(document, node, sortHandlers);
-        handle0(document, node, preHandlers);
-        handle0(document, node, handlers);
-        handle0(document, node, postHandlers);
+        if (!sortHandlers.isEmpty()) {
+            handle0(document, node, sortHandlers);
+        }
+        if (!preHandlers.isEmpty()) {
+            handle0(document, node, preHandlers);
+        }
+        if (!handlers.isEmpty()) {
+            handle0(document, node, handlers);
+        }
+        if (!postHandlers.isEmpty()) {
+            handle0(document, node, postHandlers);
+        }
         return document;
     }
 

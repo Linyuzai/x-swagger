@@ -43,9 +43,32 @@ public abstract class AbstractSwaggerNode implements SwaggerNode {
         return key;
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     @Override
     public Object getValue() {
         return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toJson() {
+        return String.valueOf(value);
+    }
+
+    @Override
+    public String stringValue() {
+        return null;
+    }
+
+    @Override
+    public boolean booleanValue() {
+        return false;
     }
 
     @Override

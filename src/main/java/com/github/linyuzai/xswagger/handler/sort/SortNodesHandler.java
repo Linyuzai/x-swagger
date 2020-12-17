@@ -4,9 +4,9 @@ import com.github.linyuzai.xswagger.document.entity.SwaggerDocument;
 import com.github.linyuzai.xswagger.handler.AbstractSwaggerHandler;
 import com.github.linyuzai.xswagger.node.SwaggerNode;
 
-public class SortNodeHandler extends AbstractSwaggerHandler {
+public class SortNodesHandler extends AbstractSwaggerHandler {
 
-    public SortNodeHandler(String... locations) {
+    public SortNodesHandler(String... locations) {
         super(locations);
     }
 

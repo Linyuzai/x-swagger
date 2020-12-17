@@ -10,6 +10,12 @@ public interface SwaggerNode {
 
     Object getValue();
 
+    String toJson();
+
+    String stringValue();
+
+    boolean booleanValue();
+
     SwaggerNode getParent();
 
     List<? extends SwaggerNode> getChildren();

@@ -4,6 +4,10 @@ public class SwaggerPathResponse {
 
     private String response;
 
+    public SwaggerPathResponse(String response) {
+        this.response = response;
+    }
+
     public String getResponse() {
         return response;
     }

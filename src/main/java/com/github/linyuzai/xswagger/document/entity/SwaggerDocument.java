@@ -4,6 +4,7 @@ import com.github.linyuzai.xswagger.document.renderer.MarkdownRenderer;
 import com.github.linyuzai.xswagger.document.renderer.SwaggerDocumentRenderer;
 import com.github.linyuzai.xswagger.document.writer.MarkdownWriter;
 import com.github.linyuzai.xswagger.document.writer.SwaggerDocumentWriter;
+import com.github.linyuzai.xswagger.node.SwaggerNode;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -15,6 +16,8 @@ public class SwaggerDocument {
     private String basePath;
 
     private Map<String, Map<String, SwaggerPath>> pathMap = new LinkedHashMap<>();
+
+    private Map<String, SwaggerNode> definitionMap = new LinkedHashMap<>();
 
     public String getBasePath() {
         return basePath;
@@ -30,6 +33,14 @@ public class SwaggerDocument {
 
     public Collection<SwaggerPath> getPaths() {
         return pathMap.values().stream().flatMap(it -> it.values().stream()).collect(Collectors.toList());
+    }
+
+    public void addDefinition(SwaggerNode node) {
+        definitionMap.put("#/" + node.getParent().getKey() + "/" + node.getKey(), node);
+    }
+
+    public SwaggerNode getDefinition(String key) {
+        return definitionMap.get(key);
     }
 
     public SwaggerDocumentWriter render(SwaggerDocumentRenderer renderer) {
