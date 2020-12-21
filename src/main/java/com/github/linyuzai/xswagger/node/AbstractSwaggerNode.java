@@ -57,21 +57,6 @@ public abstract class AbstractSwaggerNode implements SwaggerNode {
     }
 
     @Override
-    public String toJson() {
-        return String.valueOf(value);
-    }
-
-    @Override
-    public String stringValue() {
-        return null;
-    }
-
-    @Override
-    public boolean booleanValue() {
-        return false;
-    }
-
-    @Override
     public SwaggerNode getParent() {
         return parent;
     }

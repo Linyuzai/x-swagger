@@ -9,11 +9,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.linyuzai.xswagger.exception.XSwaggerException;
 import com.github.linyuzai.xswagger.node.AbstractSwaggerNode;
+import com.github.linyuzai.xswagger.node.SwaggerJson;
 import com.github.linyuzai.xswagger.node.SwaggerNode;
 
 import java.util.*;
 
-public class JacksonSwaggerNode extends AbstractSwaggerNode {
+public class JacksonSwaggerNode extends AbstractSwaggerNode implements SwaggerJson {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -73,12 +74,17 @@ public class JacksonSwaggerNode extends AbstractSwaggerNode {
     }
 
     @Override
+    public Map<String, Object> toResponseMap() {
+        return null;
+    }
+
+    @Override
     public String stringValue() {
         Object val = getValue();
         if (val instanceof TextNode) {
             return ((TextNode) val).asText();
         }
-        return null;
+        throw new XSwaggerException("Node should be TextNode, but " + val.getClass().getSimpleName() + " now");
     }
 
     @Override
@@ -87,6 +93,6 @@ public class JacksonSwaggerNode extends AbstractSwaggerNode {
         if (val instanceof BooleanNode) {
             return ((BooleanNode) val).asBoolean();
         }
-        return false;
+        throw new XSwaggerException("Node should be BooleanNode, but " + val.getClass().getSimpleName() + " now");
     }
 }

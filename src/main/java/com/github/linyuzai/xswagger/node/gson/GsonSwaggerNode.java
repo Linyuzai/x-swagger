@@ -1,12 +1,14 @@
 package com.github.linyuzai.xswagger.node.gson;
 
+import com.github.linyuzai.xswagger.exception.XSwaggerException;
 import com.github.linyuzai.xswagger.node.AbstractSwaggerNode;
+import com.github.linyuzai.xswagger.node.SwaggerJson;
 import com.github.linyuzai.xswagger.node.SwaggerNode;
 import com.google.gson.*;
 
 import java.util.*;
 
-public class GsonSwaggerNode extends AbstractSwaggerNode {
+public class GsonSwaggerNode extends AbstractSwaggerNode implements SwaggerJson {
 
     private static Gson gson = new Gson();
 
@@ -58,12 +60,17 @@ public class GsonSwaggerNode extends AbstractSwaggerNode {
     }
 
     @Override
+    public Map<String, Object> toResponseMap() {
+        return null;
+    }
+
+    @Override
     public String stringValue() {
         Object val = getValue();
         if (val instanceof JsonPrimitive) {
             return ((JsonPrimitive) val).getAsString();
         }
-        return null;
+        throw new XSwaggerException("Node should be JsonPrimitive, but " + val.getClass().getSimpleName() + " now");
     }
 
     @Override
@@ -72,6 +79,6 @@ public class GsonSwaggerNode extends AbstractSwaggerNode {
         if (val instanceof JsonPrimitive) {
             return ((JsonPrimitive) val).getAsBoolean();
         }
-        return false;
+        throw new XSwaggerException("Node should be JsonPrimitive, but " + val.getClass().getSimpleName() + " now");
     }
 }
