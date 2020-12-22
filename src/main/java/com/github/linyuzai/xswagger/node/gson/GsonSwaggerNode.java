@@ -61,7 +61,41 @@ public class GsonSwaggerNode extends AbstractSwaggerNode implements SwaggerJson 
 
     @Override
     public Map<String, Object> toResponseMap() {
-        return null;
+        return toResponseMap(getValue());
+    }
+
+    private Map<String, Object> toResponseMap(Object val) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (val instanceof JsonObject) {
+            JsonObject properties = ((JsonObject) val).getAsJsonObject("properties");
+            for (Map.Entry<String, JsonElement> entry : properties.entrySet()) {
+                JsonObject property = (JsonObject) entry.getValue();
+                Object ref = property.get("$ref");
+                if (ref == null) {
+                    String type = property.get("type").getAsString();
+                    if ("array".equals(type)) {
+                        Object items = property.getAsJsonObject("items").get("$ref");
+                        map.put(entry.getKey(), toResponseMap(items));
+                    } else {
+                        JsonElement desc = property.get("description");
+                        if (desc == null) {
+                            map.put(entry.getKey(), "");
+                        } else {
+                            map.put(entry.getKey(), desc.getAsString());
+                        }
+                    }
+                } else {
+                    map.put(entry.getKey(), toResponseMap(ref));
+                }
+            }
+            return map;
+        }
+        throw new XSwaggerException("Node should be JsonObject, but " + val.getClass().getSimpleName() + " now");
+    }
+
+    @Override
+    public String toResponseJson() {
+        return gson.toJson(toResponseMap());
     }
 
     @Override

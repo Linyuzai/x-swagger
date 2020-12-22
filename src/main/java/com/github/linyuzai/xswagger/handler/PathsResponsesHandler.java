@@ -12,6 +12,7 @@ public class PathsResponsesHandler extends AbstractSwaggerHandler {
 
     @Override
     public void handle(SwaggerDocument document, SwaggerNode node) {
-        getPath(document, node).setResponse(new SwaggerPathResponse(node.toJson()));
+        SwaggerNode def = document.getDefinition(node.stringValue());
+        getPath(document, node).setResponse(new SwaggerPathResponse(def.toResponseJson()));
     }
 }

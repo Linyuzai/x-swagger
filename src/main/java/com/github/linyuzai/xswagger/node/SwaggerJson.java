@@ -8,6 +8,8 @@ public interface SwaggerJson {
 
     Map<String, Object> toResponseMap();
 
+    String toResponseJson();
+
     String stringValue();
 
     boolean booleanValue();

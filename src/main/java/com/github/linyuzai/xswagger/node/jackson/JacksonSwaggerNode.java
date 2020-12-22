@@ -3,10 +3,7 @@ package com.github.linyuzai.xswagger.node.jackson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.databind.node.*;
 import com.github.linyuzai.xswagger.exception.XSwaggerException;
 import com.github.linyuzai.xswagger.node.AbstractSwaggerNode;
 import com.github.linyuzai.xswagger.node.SwaggerJson;
@@ -75,7 +72,54 @@ public class JacksonSwaggerNode extends AbstractSwaggerNode implements SwaggerJs
 
     @Override
     public Map<String, Object> toResponseMap() {
-        return null;
+        return toResponseMap(getValue());
+    }
+
+    private Map<String, Object> toResponseMap(Object val) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (val instanceof ObjectNode) {
+            JsonNode properties = ((ObjectNode) val).get("properties");
+            Iterator<Map.Entry<String, JsonNode>> iterator = properties.fields();
+            while (iterator.hasNext()) {
+                Map.Entry<String, JsonNode> entry = iterator.next();
+                JsonNode property = entry.getValue();
+                Object ref = property.get("$ref");
+                if (ref == null) {
+                    String type = property.get("type").asText();
+                    if ("array".equals(type)) {
+                        JsonNode items = property.get("items");
+                        JsonNode refItems = items.get("$ref");
+                        if (refItems == null) {
+                            map.put(entry.getKey(), Collections.singletonList(type));
+                        } else {
+                            //children是相同的类型
+                            map.put(entry.getKey(), Collections.singletonList(toResponseMap(refItems)));
+                        }
+                    } else {
+                        JsonNode desc = property.get("description");
+                        if (desc == null) {
+                            map.put(entry.getKey(), "");
+                        } else {
+                            map.put(entry.getKey(), desc.asText());
+                        }
+                    }
+                } else {
+                    //children是相同的类型
+                    map.put(entry.getKey(), toResponseMap(ref));
+                }
+            }
+            return map;
+        }
+        throw new XSwaggerException("Node should be JsonObject, but " + val.getClass().getSimpleName() + " now");
+    }
+
+    @Override
+    public String toResponseJson() {
+        try {
+            return objectMapper.writeValueAsString(toResponseMap());
+        } catch (JsonProcessingException e) {
+            throw new XSwaggerException(e);
+        }
     }
 
     @Override
