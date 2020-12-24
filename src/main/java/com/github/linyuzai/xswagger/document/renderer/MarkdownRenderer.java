@@ -3,6 +3,7 @@ package com.github.linyuzai.xswagger.document.renderer;
 import com.github.linyuzai.xswagger.document.entity.SwaggerDocument;
 import com.github.linyuzai.xswagger.document.entity.SwaggerPath;
 import com.github.linyuzai.xswagger.document.entity.SwaggerPathParameter;
+import com.github.linyuzai.xswagger.document.entity.SwaggerPathResponse;
 import com.github.linyuzai.xswagger.document.writer.MarkdownWriter;
 
 public class MarkdownRenderer implements SwaggerDocumentRenderer {
@@ -46,6 +47,16 @@ public class MarkdownRenderer implements SwaggerDocumentRenderer {
             }
             builder.append("\n");
             builder.append("**返回值**\n");
+            builder.append("\n");
+            builder.append("```\n");
+            SwaggerPathResponse response = path.getResponse();
+            if (response == null) {
+                builder.append("null\n");
+            } else {
+                builder.append(response.getResponse()).append("\n");
+            }
+            builder.append("```\n");
+            builder.append("\n");
             builder.append("\n");
         }
     }

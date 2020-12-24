@@ -93,7 +93,11 @@ public class JacksonSwaggerNode extends AbstractSwaggerNode implements SwaggerJs
                             map.put(entry.getKey(), Collections.singletonList(type));
                         } else {
                             //children是相同的类型
-                            map.put(entry.getKey(), Collections.singletonList(toResponseMap(refItems)));
+                            if (refItems instanceof NullNode) {
+                                map.put(entry.getKey(), Collections.emptyList());
+                            } else {
+                                map.put(entry.getKey(), Collections.singletonList(toResponseMap(refItems)));
+                            }
                         }
                     } else {
                         JsonNode desc = property.get("description");
@@ -105,7 +109,11 @@ public class JacksonSwaggerNode extends AbstractSwaggerNode implements SwaggerJs
                     }
                 } else {
                     //children是相同的类型
-                    map.put(entry.getKey(), toResponseMap(ref));
+                    if (ref instanceof NullNode) {
+                        map.put(entry.getKey(), "对象本身");
+                    } else {
+                        map.put(entry.getKey(), toResponseMap(ref));
+                    }
                 }
             }
             return map;
