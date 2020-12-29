@@ -90,11 +90,16 @@ public class JacksonSwaggerNode extends AbstractSwaggerNode implements SwaggerJs
                         JsonNode items = property.get("items");
                         JsonNode refItems = items.get("$ref");
                         if (refItems == null) {
-                            map.put(entry.getKey(), Collections.singletonList(type));
+                            JsonNode itemType = items.get("type");
+                            if (itemType instanceof TextNode) {
+                                map.put(entry.getKey(), Collections.singletonList(itemType.asText()));
+                            } else {
+                                map.put(entry.getKey(), Collections.emptyList());
+                            }
                         } else {
                             //children是相同的类型
                             if (refItems instanceof NullNode) {
-                                map.put(entry.getKey(), Collections.emptyList());
+                                map.put(entry.getKey(), Collections.singletonList("对象本身"));
                             } else {
                                 map.put(entry.getKey(), Collections.singletonList(toResponseMap(refItems)));
                             }

@@ -3,9 +3,9 @@ package com.github.linyuzai.xswagger.handler;
 import com.github.linyuzai.xswagger.document.entity.SwaggerDocument;
 import com.github.linyuzai.xswagger.node.SwaggerNode;
 
-public class RemoveArrayPathsParametersHandler extends AbstractSwaggerHandler {
+public class PathsParametersArrayRemoveHandler extends AbstractSwaggerHandler {
 
-    public RemoveArrayPathsParametersHandler() {
+    public PathsParametersArrayRemoveHandler() {
         super("paths", "*", "*", "parameters", "*", "name");
     }
 

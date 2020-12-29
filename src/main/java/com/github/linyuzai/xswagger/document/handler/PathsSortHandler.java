@@ -4,11 +4,11 @@ import com.github.linyuzai.xswagger.document.entity.SwaggerDocument;
 import com.github.linyuzai.xswagger.handler.AbstractSwaggerHandler;
 import com.github.linyuzai.xswagger.node.SwaggerNode;
 
-public class SortPathsHandler implements SwaggerDocumentHandler {
+public class PathsSortHandler implements SwaggerDocumentHandler {
 
     private String path;
 
-    public SortPathsHandler(String path) {
+    public PathsSortHandler(String path) {
         this.path = path;
     }
 

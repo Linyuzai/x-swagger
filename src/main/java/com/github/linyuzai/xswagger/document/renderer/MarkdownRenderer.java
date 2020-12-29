@@ -58,7 +58,7 @@ public class MarkdownRenderer implements SwaggerDocumentRenderer {
             builder.append("```");
             SwaggerPathResponse response = path.getResponse();
             if (response == null) {
-                builder.append("null\n");
+                builder.append("\nnull\n");
             } else {
                 String resp = response.getResponse();
                 if (!resp.startsWith("\n")) {
@@ -67,7 +67,6 @@ public class MarkdownRenderer implements SwaggerDocumentRenderer {
                 builder.append(resp).append("\n");
             }
             builder.append("```\n");
-            builder.append("\n");
             builder.append("\n");
         }
     }

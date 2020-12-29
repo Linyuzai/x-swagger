@@ -77,11 +77,16 @@ public class GsonSwaggerNode extends AbstractSwaggerNode implements SwaggerJson 
                         JsonObject items = property.getAsJsonObject("items");
                         JsonElement refItems = items.get("$ref");
                         if (refItems == null) {
-                            map.put(entry.getKey(), Collections.singletonList(type));
+                            JsonElement itemType = items.get("type");
+                            if (itemType instanceof JsonPrimitive) {
+                                map.put(entry.getKey(), Collections.singletonList(itemType.getAsString()));
+                            } else {
+                                map.put(entry.getKey(), Collections.emptyList());
+                            }
                         } else {
                             //children是相同的类型
                             if (refItems instanceof JsonNull) {
-                                map.put(entry.getKey(), Collections.emptyList());
+                                map.put(entry.getKey(), Collections.singletonList("对象本身"));
                             } else {
                                 map.put(entry.getKey(), Collections.singletonList(toResponseMap(refItems)));
                             }
