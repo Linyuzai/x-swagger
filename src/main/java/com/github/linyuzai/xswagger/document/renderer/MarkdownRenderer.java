@@ -27,7 +27,14 @@ public class MarkdownRenderer implements SwaggerDocumentRenderer {
         builder.append("\n");
 
         for (SwaggerPath path : document.getPaths()) {
-            builder.append("##### ").append(path.getDescription()).append("\n");
+            builder.append("##### ");
+            String desc = path.getDescription();
+            if (desc == null || desc.trim().isEmpty()) {
+                builder.append("[~~缺少描述~~]");
+            } else {
+                builder.append(desc);
+            }
+            builder.append("\n");
             builder.append("\n");
             builder.append("```\n");
             builder.append(path.getMethod().toUpperCase()).append(" ").append(path.getPath()).append("\n");
@@ -48,12 +55,16 @@ public class MarkdownRenderer implements SwaggerDocumentRenderer {
             builder.append("\n");
             builder.append("**返回值**\n");
             builder.append("\n");
-            builder.append("```\n");
+            builder.append("```");
             SwaggerPathResponse response = path.getResponse();
             if (response == null) {
                 builder.append("null\n");
             } else {
-                builder.append(response.getResponse()).append("\n");
+                String resp = response.getResponse();
+                if (!resp.startsWith("\n")) {
+                    builder.append("\n");
+                }
+                builder.append(resp).append("\n");
             }
             builder.append("```\n");
             builder.append("\n");
