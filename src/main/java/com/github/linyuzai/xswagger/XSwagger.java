@@ -1,7 +1,7 @@
 package com.github.linyuzai.xswagger;
 
 import com.github.linyuzai.xswagger.document.entity.SwaggerDocument;
-import com.github.linyuzai.xswagger.handler.sort.SortNodesHandler;
+import com.github.linyuzai.xswagger.document.handler.SwaggerDocumentHandler;
 import com.github.linyuzai.xswagger.handler.SwaggerHandler;
 import com.github.linyuzai.xswagger.node.SwaggerNode;
 import com.github.linyuzai.xswagger.node.gson.GsonSwaggerNode;
@@ -12,17 +12,15 @@ import java.util.List;
 
 public class XSwagger {
 
-    private List<SortNodesHandler> sortHandlers = new ArrayList<>();
-
     private List<SwaggerHandler> preHandlers = new ArrayList<>();
 
     private List<SwaggerHandler> handlers = new ArrayList<>();
 
     private List<SwaggerHandler> postHandlers = new ArrayList<>();
 
-    public void addSortHandler(SortNodesHandler handler) {
-        sortHandlers.add(0, handler);
-    }
+    private List<SwaggerDocumentHandler> sortHandlers = new ArrayList<>();
+
+    private List<SwaggerDocumentHandler> documentHandlers = new ArrayList<>();
 
     public void addPreHandler(SwaggerHandler handler) {
         preHandlers.add(handler);
@@ -36,6 +34,14 @@ public class XSwagger {
         postHandlers.add(handler);
     }
 
+    public void addSortHandler(SwaggerDocumentHandler handler) {
+        sortHandlers.add(0, handler);
+    }
+
+    public void addDocumentHandler(SwaggerDocumentHandler handler) {
+        documentHandlers.add(handler);
+    }
+
     public SwaggerDocument gson(String json) {
         return handle(new SwaggerDocument(), GsonSwaggerNode.from(json));
     }
@@ -45,29 +51,38 @@ public class XSwagger {
     }
 
     public SwaggerDocument handle(SwaggerDocument document, SwaggerNode node) {
-        if (!sortHandlers.isEmpty()) {
-            handle0(document, node, sortHandlers);
-        }
         if (!preHandlers.isEmpty()) {
-            handle0(document, node, preHandlers);
+            handleSwaggerNode(document, node, preHandlers);
         }
         if (!handlers.isEmpty()) {
-            handle0(document, node, handlers);
+            handleSwaggerNode(document, node, handlers);
         }
         if (!postHandlers.isEmpty()) {
-            handle0(document, node, postHandlers);
+            handleSwaggerNode(document, node, postHandlers);
+        }
+        if (!sortHandlers.isEmpty()) {
+            handleSwaggerDocument(document, sortHandlers);
+        }
+        if (!documentHandlers.isEmpty()) {
+            handleSwaggerDocument(document, documentHandlers);
         }
         return document;
     }
 
-    private static void handle0(SwaggerDocument document, SwaggerNode node, List<? extends SwaggerHandler> handlers) {
+    private static void handleSwaggerDocument(SwaggerDocument document, List<? extends SwaggerDocumentHandler> handlers) {
+        for (SwaggerDocumentHandler handler : handlers) {
+            handler.handle(document);
+        }
+    }
+
+    private static void handleSwaggerNode(SwaggerDocument document, SwaggerNode node, List<? extends SwaggerHandler> handlers) {
         for (SwaggerHandler handler : handlers) {
             if (handler.isLocated(node)) {
                 handler.handle(document, node);
             }
         }
         for (SwaggerNode child : node.getChildren()) {
-            handle0(document, child, handlers);
+            handleSwaggerNode(document, child, handlers);
         }
     }
 }

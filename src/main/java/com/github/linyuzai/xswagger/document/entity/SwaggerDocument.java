@@ -6,9 +6,8 @@ import com.github.linyuzai.xswagger.document.writer.MarkdownWriter;
 import com.github.linyuzai.xswagger.document.writer.SwaggerDocumentWriter;
 import com.github.linyuzai.xswagger.node.SwaggerNode;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 public class SwaggerDocument {
@@ -31,8 +30,20 @@ public class SwaggerDocument {
         return pathMap.computeIfAbsent(url, u -> new LinkedHashMap<>()).computeIfAbsent(method, m -> new SwaggerPath(method, url));
     }
 
-    public Collection<SwaggerPath> getPaths() {
+    public List<SwaggerPath> getPaths() {
         return pathMap.values().stream().flatMap(it -> it.values().stream()).collect(Collectors.toList());
+    }
+
+    public void sortPaths(Comparator<String> c) {
+        pathMap = pathMap.entrySet().stream()
+                .sorted((o1, o2) -> c.compare(o1.getKey(), o2.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, throwingMerger(), LinkedHashMap::new));
+    }
+
+    private static <T> BinaryOperator<T> throwingMerger() {
+        return (u, v) -> {
+            throw new IllegalStateException(String.format("Duplicate key %s", u));
+        };
     }
 
     public void addDefinition(SwaggerNode node) {
