@@ -13,4 +13,6 @@ public interface SwaggerNode extends SwaggerJson {
     SwaggerNode getParent();
 
     List<? extends SwaggerNode> getChildren();
+
+    SwaggerNode getChild(String key);
 }

@@ -68,6 +68,9 @@ public class GsonSwaggerNode extends AbstractSwaggerNode implements SwaggerJson 
         Map<String, Object> map = new LinkedHashMap<>();
         if (val instanceof JsonObject) {
             JsonObject properties = ((JsonObject) val).getAsJsonObject("properties");
+            if (properties == null) {
+                return map;
+            }
             for (Map.Entry<String, JsonElement> entry : properties.entrySet()) {
                 JsonObject property = (JsonObject) entry.getValue();
                 Object ref = property.get("$ref");
@@ -113,8 +116,12 @@ public class GsonSwaggerNode extends AbstractSwaggerNode implements SwaggerJson 
     }
 
     @Override
-    public String toResponseJson() {
-        return gson.toJson(toResponseMap());
+    public String toResponseJson(boolean array) {
+        if (array) {
+            return gson.toJson(Collections.singletonList(toResponseMap()));
+        } else {
+            return gson.toJson(toResponseMap());
+        }
     }
 
     @Override

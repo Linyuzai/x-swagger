@@ -44,7 +44,11 @@ public class DefinitionsRefHandler extends AbstractSwaggerHandler {
                 jn = NullNode.getInstance();
             } else {
                 SwaggerNode def = document.getDefinition(strVal);
-                jn = (JsonNode) def.getValue();
+                if (def == null) {
+                    jn = new TextNode(strVal.replace("#/definitions/", ""));
+                } else {
+                    jn = (JsonNode) def.getValue();
+                }
             }
             ((ObjectNode) node.getParent().getValue()).set("$ref", jn);
         }

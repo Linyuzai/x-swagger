@@ -79,6 +79,9 @@ public class JacksonSwaggerNode extends AbstractSwaggerNode implements SwaggerJs
         Map<String, Object> map = new LinkedHashMap<>();
         if (val instanceof ObjectNode) {
             JsonNode properties = ((ObjectNode) val).get("properties");
+            if (properties == null) {
+                return map;
+            }
             Iterator<Map.Entry<String, JsonNode>> iterator = properties.fields();
             while (iterator.hasNext()) {
                 Map.Entry<String, JsonNode> entry = iterator.next();
@@ -127,9 +130,13 @@ public class JacksonSwaggerNode extends AbstractSwaggerNode implements SwaggerJs
     }
 
     @Override
-    public String toResponseJson() {
+    public String toResponseJson(boolean array) {
         try {
-            return objectMapper.writeValueAsString(toResponseMap());
+            if (array) {
+                return objectMapper.writeValueAsString(Collections.singletonList(toResponseMap()));
+            } else {
+                return objectMapper.writeValueAsString(toResponseMap());
+            }
         } catch (JsonProcessingException e) {
             throw new XSwaggerException(e);
         }

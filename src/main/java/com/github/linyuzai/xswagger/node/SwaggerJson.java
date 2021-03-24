@@ -10,6 +10,8 @@ public interface SwaggerJson {
 
     String toResponseJson();
 
+    String toResponseJson(boolean array);
+
     String stringValue();
 
     boolean booleanValue();

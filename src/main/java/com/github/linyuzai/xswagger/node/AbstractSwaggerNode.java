@@ -66,5 +66,20 @@ public abstract class AbstractSwaggerNode implements SwaggerNode {
         return children;
     }
 
+    @Override
+    public SwaggerNode getChild(String key) {
+        for (SwaggerNode child : getChildren()) {
+            if (child.getKey().equals(key)) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String toResponseJson() {
+        return toResponseJson(false);
+    }
+
     protected abstract List<? extends SwaggerNode> children(Object o);
 }
