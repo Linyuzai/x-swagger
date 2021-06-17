@@ -1,10 +1,11 @@
-package com.github.linyuzai.xswagger.document.handler;
+package com.github.linyuzai.xswagger.handler;
 
 import com.github.linyuzai.xswagger.document.entity.SwaggerDocument;
 import com.github.linyuzai.xswagger.document.entity.SwaggerPath;
 import com.github.linyuzai.xswagger.exception.XSwaggerException;
+import com.github.linyuzai.xswagger.node.SwaggerNode;
 
-public class PathsDescriptionReplaceHandler implements SwaggerDocumentHandler {
+public class PathsDescriptionReplaceHandler extends AbstractSwaggerHandler {
 
     private String contains;
 
@@ -22,12 +23,17 @@ public class PathsDescriptionReplaceHandler implements SwaggerDocumentHandler {
     }
 
     @Override
-    public void handle(SwaggerDocument document) {
+    public void handle(SwaggerDocument document, SwaggerNode node) {
         for (SwaggerPath path : document.getPaths()) {
             String desc = path.getDescription();
             if (desc.contains(contains)) {
                 path.setDescription(desc.replaceAll(contains, replacement));
             }
         }
+    }
+
+    @Override
+    public boolean isLocated(SwaggerNode node) {
+        return true;
     }
 }

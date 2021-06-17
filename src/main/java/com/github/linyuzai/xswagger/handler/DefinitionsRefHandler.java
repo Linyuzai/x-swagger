@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.linyuzai.xswagger.document.entity.SwaggerDocument;
-import com.github.linyuzai.xswagger.document.entity.SwaggerPathParameter;
-import com.github.linyuzai.xswagger.node.AbstractSwaggerNode;
 import com.github.linyuzai.xswagger.node.SwaggerNode;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
@@ -32,7 +30,11 @@ public class DefinitionsRefHandler extends AbstractSwaggerHandler {
                 je = JsonNull.INSTANCE;
             } else {
                 SwaggerNode def = document.getDefinition(strVal);
-                je = (JsonElement) def.getValue();
+                if (def == null) {
+                    je = new JsonPrimitive(strVal.replace("#/definitions/", ""));
+                } else {
+                    je = (JsonElement) def.getValue();
+                }
             }
             ((JsonObject) node.getParent().getValue()).add("$ref", je);
         }
