@@ -12,11 +12,22 @@ import java.util.stream.Collectors;
 
 public class SwaggerDocument {
 
+    private String title;
+
     private String basePath;
 
     private Map<String, Map<String, SwaggerPath>> pathMap = new LinkedHashMap<>();
 
     private Map<String, SwaggerNode> definitionMap = new LinkedHashMap<>();
+
+    public SwaggerDocument title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 
     public String getBasePath() {
         return basePath;
@@ -60,11 +71,7 @@ public class SwaggerDocument {
     }
 
     public MarkdownWriter markdown() {
-        return markdown(null);
-    }
-
-    public MarkdownWriter markdown(String title) {
-        MarkdownRenderer renderer = new MarkdownRenderer(title);
+        MarkdownRenderer renderer = new MarkdownRenderer();
         renderer.render(this);
         return renderer.writer();
     }

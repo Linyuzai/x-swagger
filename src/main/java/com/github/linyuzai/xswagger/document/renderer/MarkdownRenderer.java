@@ -8,16 +8,11 @@ import com.github.linyuzai.xswagger.document.writer.MarkdownWriter;
 
 public class MarkdownRenderer implements SwaggerDocumentRenderer {
 
-    private String title;
-
     private StringBuilder builder = new StringBuilder();
-
-    public MarkdownRenderer(String title) {
-        this.title = title;
-    }
 
     @Override
     public void render(SwaggerDocument document) {
+        String title = document.getTitle();
         if (title != null && !title.isEmpty()) {
             builder.append("# ").append(title).append("\n");
             builder.append("\n");
