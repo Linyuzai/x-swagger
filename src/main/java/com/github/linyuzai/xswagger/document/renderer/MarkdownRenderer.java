@@ -22,7 +22,7 @@ public class MarkdownRenderer implements SwaggerDocumentRenderer {
         builder.append("\n");
 
         for (SwaggerPath path : document.getPaths()) {
-            builder.append("##### ");
+            builder.append("### ");
             String desc = path.getDescription();
             if (desc == null || desc.trim().isEmpty()) {
                 builder.append("[~~缺少描述~~]");
