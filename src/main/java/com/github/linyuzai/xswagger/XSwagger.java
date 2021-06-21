@@ -1,28 +1,64 @@
 package com.github.linyuzai.xswagger;
 
 import com.github.linyuzai.xswagger.document.entity.SwaggerDocument;
-import com.github.linyuzai.xswagger.handler.SwaggerHandler;
+import com.github.linyuzai.xswagger.handler.*;
 import com.github.linyuzai.xswagger.node.SwaggerNode;
-import com.github.linyuzai.xswagger.node.gson.GsonSwaggerNode;
-import com.github.linyuzai.xswagger.node.jackson.JacksonSwaggerNode;
+import com.github.linyuzai.xswagger.node.SwaggerNodeFactory;
+import com.github.linyuzai.xswagger.node.jackson.JacksonSwaggerNodeFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class XSwagger {
 
+    private SwaggerNodeFactory nodeFactory = new JacksonSwaggerNodeFactory();
+
     private List<SwaggerHandler> handlers = new ArrayList<>();
+
+    public SwaggerNodeFactory getNodeFactory() {
+        return nodeFactory;
+    }
+
+    public void setNodeFactory(SwaggerNodeFactory nodeFactory) {
+        this.nodeFactory = nodeFactory;
+    }
 
     public void addHandler(SwaggerHandler handler) {
         handlers.add(handler);
     }
 
-    public SwaggerDocument gson(String json) {
-        return handle(new SwaggerDocument(), GsonSwaggerNode.from(json));
+    public List<SwaggerHandler> getHandlers() {
+        return handlers;
     }
 
-    public SwaggerDocument jackson(String json) {
-        return handle(new SwaggerDocument(), JacksonSwaggerNode.from(json));
+    public XSwagger useDefaultHandlers() {
+
+        addHandler(new DefinitionsHandler());
+
+        addHandler(new BasePathHandler());
+        addHandler(new PathsDescriptionHandler());
+        addHandler(new PathsSummaryHandler());
+
+        addHandler(new PathsParametersDescriptionHandler());
+        addHandler(new PathsParametersInHandler());
+        addHandler(new PathsParametersNameHandler());
+        addHandler(new PathsParametersRequiredHandler());
+        addHandler(new PathsParametersTypeHandler());
+
+        addHandler(new DefinitionsRefHandler());
+
+        addHandler(new PathsResponsesRefHandler());
+        addHandler(new PathsResponsesRefArrayHandler());
+        addHandler(new PathsResponsesSchemaHandler());
+
+        addHandler(new PathsParametersArrayRemoveHandler());
+        addHandler(new PathsParametersObjectRemoveHandler());
+
+        return this;
+    }
+
+    public SwaggerDocument from(String json) {
+        return handle(new SwaggerDocument(), nodeFactory.create(json));
     }
 
     public SwaggerDocument handle(SwaggerDocument document, SwaggerNode node) {
