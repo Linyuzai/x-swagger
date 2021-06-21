@@ -12,8 +12,11 @@ public class PathsResponsesSchemaHandler extends AbstractSwaggerHandler {
 
     @Override
     public void handle(SwaggerDocument document, SwaggerNode node) {
-        if ("object".equals(node.stringValue())) {
+        String stringValue = node.stringValue();
+        if ("object".equals(stringValue)) {
             getPath(document, node).setResponse(new SwaggerPathResponse("object"));
+        } else if ("string".equals(stringValue)) {
+            getPath(document, node).setResponse(new SwaggerPathResponse("string"));
         }
     }
 }
