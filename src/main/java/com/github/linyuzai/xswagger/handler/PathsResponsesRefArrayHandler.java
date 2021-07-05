@@ -14,16 +14,22 @@ public class PathsResponsesRefArrayHandler extends AbstractSwaggerHandler {
 
     @Override
     public void handle(SwaggerDocument document, SwaggerNode node) {
-        SwaggerNode def = document.getDefinition(node.stringValue());
+        String stringValue = node.stringValue();
+        SwaggerNode def = document.getDefinition(stringValue);
         SwaggerNode array = node.getParent().getParent().getChild("type");
-        SwaggerNode title = def.getChild("title");
-        boolean isArray = "array".equals(array.stringValue());
-        if ("JSONObject".equals(title.stringValue())) {
+        if (def == null) {
             getPath(document, node)
-                    .setResponse(new SwaggerPathResponse("JSONObject[]"));
+                    .setResponse(new SwaggerPathResponse(stringValue.replace("#/definitions/", "")));
         } else {
-            getPath(document, node)
-                    .setResponse(new SwaggerPathResponse(format(def.toResponseJson(isArray))));
+            SwaggerNode title = def.getChild("title");
+            boolean isArray = "array".equals(array.stringValue());
+            if ("JSONObject".equals(title.stringValue())) {
+                getPath(document, node)
+                        .setResponse(new SwaggerPathResponse("JSONObject[]"));
+            } else {
+                getPath(document, node)
+                        .setResponse(new SwaggerPathResponse(format(def.toResponseJson(isArray))));
+            }
         }
     }
 }
