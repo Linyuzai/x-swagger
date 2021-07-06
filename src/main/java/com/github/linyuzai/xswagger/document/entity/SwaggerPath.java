@@ -6,6 +6,8 @@ import java.util.Map;
 
 public class SwaggerPath {
 
+    private String tag;
+
     private String method;
 
     private String path;
@@ -22,6 +24,14 @@ public class SwaggerPath {
     public SwaggerPath(String method, String path) {
         this.method = method;
         this.path = path;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public String getMethod() {

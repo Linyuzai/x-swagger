@@ -37,6 +37,7 @@ public class XSwagger {
 
         addHandler(new BasePathHandler());
         addHandler(new PathsDescriptionHandler());
+        addHandler(new PathsTagsHandler());
         addHandler(new PathsSummaryHandler());
 
         addHandler(new PathsParametersDescriptionHandler());
